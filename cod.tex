@@ -1,0 +1,200 @@
+% Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+
+\begin{allintypewriter}
+ 
+
+
+
+\noindent
+\mbox{}\textbf{\textcolor{Blue}{import}}\ Data\textcolor{BrickRed}{.}\textcolor{ForestGreen}{List} \\
+\mbox{}\textbf{\textcolor{Blue}{import}}\ Data\textcolor{BrickRed}{.}\textcolor{ForestGreen}{Maybe} \\
+\mbox{}\textbf{\textcolor{Blue}{import}}\ Data\textcolor{BrickRed}{.}\textcolor{ForestGreen}{Char} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ 1a\ Parte:\ Esqueletos\ de\ Arbol\ -\}}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Definimos\ lo\ que\ sera\ el\ esqueleto\ de\ un\ arbol,\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ es\ decir,\ un\ arbol\ sin\ etiquetas\ en\ los\ nodos,\ un\ arbol\ binario\ puro,}} \\
+\mbox{}\textit{\textcolor{Brown}{\ considerando\ solo\ su\ estructura.}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Un\ esqueleto\ se\ define\ como\ un\ esqueleto\ vacio\ o\ como\ un\ punto\ (nodo)}} \\
+\mbox{}\textit{\textcolor{Brown}{\ del\ que\ salen\ dos\ esqueletos\ de\ arbol.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{}\textbf{\textcolor{Blue}{data}}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{EsqVacio} \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{BrickRed}{$|$}\ \textcolor{ForestGreen}{Punto}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{EsqArbol}\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{EsqArbol}\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textbf{\textcolor{Blue}{deriving}}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Show}\textcolor{BrickRed}{,}\ \textcolor{ForestGreen}{Eq}\textcolor{BrickRed}{)} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Definimos\ una\ funcion\ recursiva\ trivial\ para\ contar\ nodos\ de\ un\ esqueleto.}} \\
+\mbox{}\textit{\textcolor{Brown}{\ Creamos\ una\ funcion\ que\ crea\ todos\ los\ posibles\ esqueletos\ de\ n\ nodos.\ Para\ ello,}} \\
+\mbox{}\textit{\textcolor{Brown}{\ en\ el\ caso\ inductivo,\ crea,\ para\ todo\ i\ en\ el\ rango\ [0,...,n-1]\ todos\ los\ posibles\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ arboles\ con\ i\ nodos\ a\ la\ izquierda\ y\ todos\ los\ posibles\ con\ n-1-i\ nodos\ a\ la\ derecha.}} \\
+\mbox{}\textit{\textcolor{Brown}{\ -\}}} \\
+\mbox{}nodos\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int}\  \\
+\mbox{}nodos\ \textcolor{ForestGreen}{EsqVacio}\ \textcolor{BrickRed}{=}\ \textcolor{Purple}{0} \\
+\mbox{}nodos\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Punto}\ a\ b\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{Purple}{1}\ \textcolor{BrickRed}{+}\ \textcolor{BrickRed}{(}nodos\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{+}\ \textcolor{BrickRed}{(}nodos\ b\textcolor{BrickRed}{)} \\
+\mbox{} \\
+\mbox{}arbolesNodos\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{BrickRed}{[}\textcolor{ForestGreen}{EsqArbol}\textcolor{BrickRed}{]} \\
+\mbox{}arbolesNodos\ \textcolor{Purple}{0}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{[}\textcolor{ForestGreen}{EsqVacio}\textcolor{BrickRed}{]} \\
+\mbox{}arbolesNodos\ \textcolor{Purple}{1}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{[(}\textcolor{ForestGreen}{Punto}\ \textcolor{ForestGreen}{EsqVacio}\ \textcolor{ForestGreen}{EsqVacio}\textcolor{BrickRed}{)]} \\
+\mbox{}arbolesNodos\ n\ \textcolor{BrickRed}{=}\ concat\ \textcolor{BrickRed}{[[}\textcolor{ForestGreen}{Punto}\ x\ y\ \textcolor{BrickRed}{$|$}\ y\ \textcolor{BrickRed}{\textless{}-}\ arbolesNodos\ \textcolor{BrickRed}{(}n\textcolor{BrickRed}{-}\textcolor{Purple}{1}\textcolor{BrickRed}{-}i\textcolor{BrickRed}{),}\ x\ \textcolor{BrickRed}{\textless{}-}\ arbolesNodos\ \textcolor{BrickRed}{(}i\textcolor{BrickRed}{)]}\ \textcolor{BrickRed}{$|$}\ i\ \textcolor{BrickRed}{\textless{}-}\ \textcolor{BrickRed}{[}\textcolor{Purple}{0}\textcolor{BrickRed}{..}n\textcolor{BrickRed}{-}\textcolor{Purple}{1}\textcolor{BrickRed}{]]} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ Como\ curiosidad,\ podemos\ notar\ que\ hay\ C$\_$n\ arboles\ de\ n\ nodos,\ donde\ C$\_$n\ es\ el\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ enesimo\ numero\ de\ Catalan.\ La\ longitud\ de\ la\ lista\ creadas\ por\ "{}arbolesNodos\ n"{}\ es\ C$\_$n\ -\}}} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Ahora\ vamos\ a\ codificar\ un\ esqueleto\ binario.\ Para\ ello,\ asignamos\ a\ cada\ arbol}} \\
+\mbox{}\textit{\textcolor{Brown}{\ su\ posicion\ en\ la\ lista\ de\ arboles\ generados,\ y\ escribimos\ el\ numero\ como\ palabra\ binaria.}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Para\ pasar\ a\ binario,\ intentamos\ aprovechar\ al\ maximo\ el\ espacio,\ para\ ello\ usamos\ todas}} \\
+\mbox{}\textit{\textcolor{Brown}{\ las\ palabras\ binarias\ posibles.\ Es\ decir,\ transformamos:}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ \ 0\ -\textgreater{}\ $\_$}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ \ 1\ -\textgreater{}\ 0}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ \ 2\ -\textgreater{}\ 1}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ \ 3\ -\textgreater{}\ 00}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ \ 4\ -\textgreater{}\ 01}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Adjuntamos\ ademas\ otra\ funcion\ para\ pasarlo\ a\ una\ cadena\ legible\ de\ texto}} \\
+\mbox{}\textit{\textcolor{Brown}{\ -\}}} \\
+\mbox{}aBinario\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{BrickRed}{[}\textcolor{ForestGreen}{Int}\textcolor{BrickRed}{]} \\
+\mbox{}aBinario\ \textcolor{Purple}{0}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{[]} \\
+\mbox{}aBinario\ n\ \textcolor{BrickRed}{=}\ r\ \textcolor{BrickRed}{:}\ aBinario\ q \\
+\mbox{}\ \ \textbf{\textcolor{Blue}{where}}\ \textcolor{BrickRed}{(}q\textcolor{BrickRed}{,}r\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ divMod\ \textcolor{BrickRed}{(}n\textcolor{BrickRed}{-}\textcolor{Purple}{1}\textcolor{BrickRed}{)}\ \textcolor{Purple}{2} \\
+\mbox{} \\
+\mbox{}binarioLegible\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{String} \\
+\mbox{}binarioLegible\ x\ \textcolor{BrickRed}{=}\ map\ intToDigit\ \textcolor{BrickRed}{\$}\ reverse\ \textcolor{BrickRed}{\$}\ aBinario\ x \\
+\mbox{} \\
+\mbox{}codifica\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int} \\
+\mbox{}codifica\ x\ \textcolor{BrickRed}{=}\ fromJust\ \textcolor{BrickRed}{\$}\ elemIndex\ x\ \textcolor{BrickRed}{(}arbolesNodos\ len\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \textbf{\textcolor{Blue}{where}}\ len\ \textcolor{BrickRed}{=}\ nodos\ x \\
+\mbox{} \\
+\mbox{}codificaLegible\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{String} \\
+\mbox{}codificaLegible\ x\ \textcolor{BrickRed}{=}\ binarioLegible\ \textcolor{BrickRed}{\$}\ codifica\ x \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Por\ ultimo,\ implementamos\ la\ decodificacion.\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ Notese\ que\ aqui\ debe\ conocerse\ el\ numero\ de\ nodos.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{}aNatural\ \textcolor{BrickRed}{::}\ \textcolor{BrickRed}{[}\textcolor{ForestGreen}{Int}\textcolor{BrickRed}{]}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int} \\
+\mbox{}aNatural\ \textcolor{BrickRed}{[]}\ \textcolor{BrickRed}{=}\ \textcolor{Purple}{0} \\
+\mbox{}aNatural\ \textcolor{BrickRed}{(}x\textcolor{BrickRed}{:}xs\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{Purple}{2}\textcolor{BrickRed}{*(}aNatural\ xs\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{+}\ x\ \textcolor{BrickRed}{+}\ \textcolor{Purple}{1} \\
+\mbox{} \\
+\mbox{}decodifica\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{EsqArbol} \\
+\mbox{}decodifica\ x\ nodos\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}arbolesNodos\ nodos\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{!!}\ x\  \\
+\mbox{} \\
+\mbox{}decodificaBinario\ \textcolor{BrickRed}{::}\ \textcolor{BrickRed}{[}\textcolor{ForestGreen}{Int}\textcolor{BrickRed}{]}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{EsqArbol} \\
+\mbox{}decodificaBinario\ xs\ nodos\ \textcolor{BrickRed}{=}\ decodifica\ \textcolor{BrickRed}{(}aNatural\ xs\textcolor{BrickRed}{)}\ nodos\ \  \\
+\mbox{} \\
+\mbox{}decodificaLegible\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{String}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Int}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{EsqArbol} \\
+\mbox{}decodificaLegible\ s\ nodos\ \textcolor{BrickRed}{=}\ decodificaBinario\ \textcolor{BrickRed}{(}reverse\ \textcolor{BrickRed}{(}map\ digitToInt\ \textcolor{BrickRed}{\$}\ s\textcolor{BrickRed}{))}\ nodos \\
+\mbox{} \\
+\mbox{}\ \  \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ 2a\ Parte:\ Arboles\ de\ verdad.\ -\}}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ Para\ ver\ la\ aplicacion\ real\ del\ algoritmo,\ vamos\ a\ escribir\ arboles}} \\
+\mbox{}\textit{\textcolor{Brown}{\ de\ verdad\ y\ a\ codificarlos.\ Definimos\ un\ arbol\ de\ manera\ parecida\ al\ esqueleto.}} \\
+\mbox{}\textit{\textcolor{Brown}{\ Como\ diferencia,\ ahora\ permitimos\ que\ la\ etiqueta\ contenga\ un\ dato\ de\ tipo\ a.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{}\textbf{\textcolor{Blue}{data}}\ \textcolor{ForestGreen}{Arbol}\ a\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{ArbolVacio}\  \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{BrickRed}{$|$}\ \textcolor{ForestGreen}{Nodo}\ a\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Arbol}\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Arbol}\ a\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ \textbf{\textcolor{Blue}{deriving}}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Show}\textcolor{BrickRed}{,}\ \textcolor{ForestGreen}{Eq}\textcolor{BrickRed}{)} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Codifica\ un\ arbol\ binario.}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ Para\ ello,\ toma\ sus\ elementos\ y\ los\ guarda,\ por\ otro\ lado,\ lo\ transforma\ en\ esqueleto.\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ La\ codificacion\ son\ sus\ elementos,\ implicita\ su\ longitud,\ y\ la\ codificacion\ binaria\ del\ esqueleto.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{}transformaEsqueleto\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Arbol}\ a\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{EsqArbol} \\
+\mbox{}transformaEsqueleto\ \textcolor{ForestGreen}{ArbolVacio}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{EsqVacio} \\
+\mbox{}transformaEsqueleto\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Nodo}\ \textbf{\textcolor{Blue}{$\_$}}\ a\ b\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Punto}\ \textcolor{BrickRed}{(}transformaEsqueleto\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{(}transformaEsqueleto\ b\textcolor{BrickRed}{))} \\
+\mbox{} \\
+\mbox{}preorden\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Arbol}\ a\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{BrickRed}{[}a\textcolor{BrickRed}{]} \\
+\mbox{}preorden\ \textcolor{ForestGreen}{ArbolVacio}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{[]} \\
+\mbox{}preorden\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Nodo}\ x\ a\ b\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ x\ \textcolor{BrickRed}{:}\ \textcolor{BrickRed}{((}preorden\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{++}\ \textcolor{BrickRed}{(}preorden\ b\textcolor{BrickRed}{))} \\
+\mbox{} \\
+\mbox{}codificaArbol\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{Arbol}\ a\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{BrickRed}{([}a\textcolor{BrickRed}{],}\ \textcolor{ForestGreen}{String}\textcolor{BrickRed}{)} \\
+\mbox{}codificaArbol\ x\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}preorden\ x\textcolor{BrickRed}{,}\ codificaLegible\textcolor{BrickRed}{.}transformaEsqueleto\ \textcolor{BrickRed}{\$}\ x\textcolor{BrickRed}{)} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ \ Decodifica\ un\ arbol\ binario.}} \\
+\mbox{}\textit{\textcolor{Brown}{\ Para\ ello,\ decodifica\ el\ esqueleto\ del\ arbol\ }} \\
+\mbox{}\textit{\textcolor{Brown}{\ y\ rellena\ el\ esqueleto\ con\ los\ elementos\ del\ preorden.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{} \\
+\mbox{}rellenaEsqueleto\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{BrickRed}{[}a\textcolor{BrickRed}{]}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Arbol}\ a \\
+\mbox{}rellenaEsqueleto\ \textcolor{ForestGreen}{EsqVacio}\ \textbf{\textcolor{Blue}{$\_$}}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{ArbolVacio} \\
+\mbox{}rellenaEsqueleto\ \textbf{\textcolor{Blue}{$\_$}}\ \textcolor{BrickRed}{[]}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{ArbolVacio} \\
+\mbox{}rellenaEsqueleto\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Punto}\ u\ v\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{(}x\textcolor{BrickRed}{:}xs\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Nodo}\ x\ subIzquierdo\ subDerecho\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \textbf{\textcolor{Blue}{where}}\ \textcolor{BrickRed}{(}parteIzquierda\textcolor{BrickRed}{,}\ parteDerecha\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ splitAt\ \textcolor{BrickRed}{(}nodos\ u\textcolor{BrickRed}{)}\ xs \\
+\mbox{}\ \ \ \ \ \ \ \ subIzquierdo\ \textcolor{BrickRed}{=}\ rellenaEsqueleto\ u\ parteIzquierda \\
+\mbox{}\ \ \ \ \ \ \ \ subDerecho\ \ \ \textcolor{BrickRed}{=}\ rellenaEsqueleto\ v\ parteDerecha \\
+\mbox{} \\
+\mbox{}decodificaArbol\ \textcolor{BrickRed}{::}\ \textcolor{BrickRed}{([}a\textcolor{BrickRed}{],}\ \textcolor{ForestGreen}{String}\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Arbol}\ a \\
+\mbox{}decodificaArbol\ \textcolor{BrickRed}{(}datos\textcolor{BrickRed}{,}\ codificado\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ rellenaEsqueleto\ \textcolor{BrickRed}{(}decodificaLegible\ codificado\ nodos\textcolor{BrickRed}{)}\ datos \\
+\mbox{}\ \ \textbf{\textcolor{Blue}{where}}\ nodos\ \textcolor{BrickRed}{=}\ length\ datos \\
+\mbox{}\ \ \ \ \ \ \ \  \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ 3a\ Parte:\ Funciones\ auxiliares.\ -\}}} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ Para\ poder\ aprovechar\ la\ codificacion\ creada,\ se\ presentan\ funciones\ auxiliares\ que}} \\
+\mbox{}\textit{\textcolor{Brown}{\ faciliten\ ejemplos\ de\ uso.}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}} \\
+\mbox{} \\
+\mbox{}insercionEnArbol\ \textcolor{BrickRed}{::}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Ord}\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=\textgreater{}}\ a\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Arbol}\ a\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Arbol}\ a \\
+\mbox{}insercionEnArbol\ x\ \textcolor{ForestGreen}{ArbolVacio}\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Nodo}\ x\ \textcolor{ForestGreen}{ArbolVacio}\ \textcolor{ForestGreen}{ArbolVacio}\textcolor{BrickRed}{)} \\
+\mbox{}insercionEnArbol\ x\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Nodo}\ a\ izq\ der\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ x\ \textcolor{BrickRed}{\textless{}=}\ a\ \ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{Nodo}\ a\ \textcolor{BrickRed}{(}insercionEnArbol\ x\ izq\textcolor{BrickRed}{)}\ der \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ x\ \textcolor{BrickRed}{\textgreater{}}\ a\ \ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{Nodo}\ a\ izq\ \textcolor{BrickRed}{(}insercionEnArbol\ x\ der\textcolor{BrickRed}{)} \\
+\mbox{} \\
+\mbox{}crearArbol\ \textcolor{BrickRed}{::}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Ord}\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=\textgreater{}}\ \textcolor{BrickRed}{[}a\textcolor{BrickRed}{]}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Arbol}\ a \\
+\mbox{}crearArbol\ \textcolor{BrickRed}{=}\ foldr\ insercionEnArbol\ \textcolor{ForestGreen}{ArbolVacio}\ \textcolor{BrickRed}{.}\ reverse \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ Definimos\ el\ orden\ total\ entre\ esqueletos\ de\ arbol.\ -\}}} \\
+\mbox{}esqCompara\ \textcolor{BrickRed}{::}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{EsqArbol}\ \textcolor{BrickRed}{-\textgreater{}}\ \textcolor{ForestGreen}{Ordering} \\
+\mbox{}esqCompara\ \textcolor{ForestGreen}{EsqVacio}\ \textcolor{ForestGreen}{EsqVacio}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{EQ} \\
+\mbox{}esqCompara\ \textcolor{ForestGreen}{EsqVacio}\ \textbf{\textcolor{Blue}{$\_$}}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{LT} \\
+\mbox{}esqCompara\ \textbf{\textcolor{Blue}{$\_$}}\ \textcolor{ForestGreen}{EsqVacio}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{GT} \\
+\mbox{}esqCompara\ a\ b\  \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ \textcolor{BrickRed}{(}nodos\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{\textless{}}\ \textcolor{BrickRed}{(}nodos\ b\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{LT} \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ \textcolor{BrickRed}{(}nodos\ a\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{\textgreater{}}\ \textcolor{BrickRed}{(}nodos\ b\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{GT} \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ \textcolor{BrickRed}{(}esqCompara\ ad\ bd\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{==}\ \textcolor{ForestGreen}{LT}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{LT} \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ \textcolor{BrickRed}{(}esqCompara\ ad\ bd\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{==}\ \textcolor{ForestGreen}{GT}\ \textcolor{BrickRed}{=}\ \textcolor{ForestGreen}{GT} \\
+\mbox{}\ \ \textcolor{BrickRed}{$|$}\ otherwise\ \textcolor{BrickRed}{=}\ \textcolor{BrickRed}{(}esqCompara\ ai\ bi\textcolor{BrickRed}{)} \\
+\mbox{}\ \ \ \ \textbf{\textcolor{Blue}{where}}\ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Punto}\ ai\ ad\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ a \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \textcolor{BrickRed}{(}\textcolor{ForestGreen}{Punto}\ bi\ bd\textcolor{BrickRed}{)}\ \textcolor{BrickRed}{=}\ b \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{\{-\ Ejemplo\ de\ uso\ -\}}} \\
+\mbox{}\textit{\textcolor{Brown}{\{-}} \\
+\mbox{}\textit{\textcolor{Brown}{\ \ Para\ comprobar\ el\ correcto\ funcionamiento\ de\ la\ codificacion\ expuesta,\ probamos\ a\ codificar\ un\ arbol\ sencillo.}} \\
+\mbox{}\textit{\textcolor{Brown}{El\ resultado\ de\ la\ ejecucion\ de\ una\ sesion\ interactiva\ de\ ghci,\ compilando\ este\ codigo,\ se\ muestra\ a\ continuacion.}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{-\/-\ Creamos\ un\ arbol\ binario\ desde\ la\ lista\ [2,5,3,4,6,5]}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{*\textgreater{}\ let\ p\ =\ crearArbol\ [2,5,3,4,6,5]}} \\
+\mbox{}\textit{\textcolor{Brown}{*\textgreater{}\ p}} \\
+\mbox{}\textit{\textcolor{Brown}{Nodo\ 2\ ArbolVacio\ (Nodo\ 5\ (Nodo\ 3\ ArbolVacio\ (Nodo\ 4\ ArbolVacio\ (Nodo\ 5\ ArbolVacio\ ArbolVacio)))\ (Nodo\ 6\ ArbolVacio\ ArbolVacio))}} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{-\/-\ Codificamos\ el\ arbol}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{*\textgreater{}\ let\ cod\ =\ codificaArbol\ p}} \\
+\mbox{}\textit{\textcolor{Brown}{*\textgreater{}\ cod}} \\
+\mbox{}\textit{\textcolor{Brown}{([2,5,3,4,5,6],"{}1000"{})}} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{-\/-\ Decodificamos\ y\ comprobamos\ que\ equivale\ al\ original.}} \\
+\mbox{} \\
+\mbox{}\textit{\textcolor{Brown}{*\textgreater{}\ decodificaArbol\ cod}} \\
+\mbox{}\textit{\textcolor{Brown}{Nodo\ 2\ ArbolVacio\ (Nodo\ 5\ (Nodo\ 3\ ArbolVacio\ (Nodo\ 4\ ArbolVacio\ (Nodo\ 5\ ArbolVacio\ ArbolVacio)))\ (Nodo\ 6\ ArbolVacio\ ArbolVacio))}} \\
+\mbox{}\textit{\textcolor{Brown}{-\}}}
+
+\end{allintypewriter}
