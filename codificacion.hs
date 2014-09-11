@@ -33,7 +33,7 @@ arbolesNodos 1 = [(Punto EsqVacio EsqVacio)]
 arbolesNodos n = concat [[Punto x y | y <- arbolesNodos (n-1-i), x <- arbolesNodos (i)] | i <- [0..n-1]]
 
 {- Como curiosidad, podemos notar que hay C_n arboles de n nodos, donde C_n es el 
- enesimo numero de Catalan. La longitud de la lista creadas por "arbolesNodos n" es C_n -}
+ enesimo numero de Catalan. La longitud de la lista creada por "arbolesNodos n" es C_n -}
 
 
 {- 
