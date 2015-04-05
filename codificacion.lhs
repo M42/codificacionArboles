@@ -1,6 +1,5 @@
 ---
 title: Reto 4
-subtitle: Codificación de árboles binarios
 author: Mario Román
 ---
 
@@ -20,3 +19,13 @@ implícitamente, el número de nodos que tiene.
 
 ![Árbol de ejemplo](ejemplo.jpeg)
 
+En el ejemplo, de $5$ nodos, codificaríamos: `[5,2,-4,3,18]`
+
+Es decir, que nuestro problema se centra en codificar la estructura, el
+esqueleto de un árbol binario. Consideramos que las etiquetas se codifican aparte.
+
+Intentaremos conseguir la mejor codificación posible de la estructura de un árbol de $n$ nodos creando una
+función biyectiva entre árboles binarios y números naturales; y codificando el
+número natural que nos dé la biyección.
+
+## Orden total entre árboles
