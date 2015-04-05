@@ -1,4 +1,95 @@
 \documentclass{article}
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
 \usepackage[spanish,activeacute]{babel}
 \usepackage{changepage}
 \usepackage[utf8]{inputenc}
@@ -218,21 +309,371 @@ Se presenta una implementación de la codificación en lenguaje de programación
 concisas de los árboles y las funciones sobre ellos que C++, a pesar de que perdemos mucha eficiencia. Nótese que no se ha hecho referencia a la eficiencia del algoritmo en
 ningún momento. Sólo nos interesa obtener la minima codificación, y los algoritmos usados para comprimir y descomprimir serán muy ineficientes.\\
 
-Al final de la implementación se da un ejemplo de uso.\\
+Al final de la implementación se da un ejemplo de uso.
 
-\input{cod.tex}
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathbf{import}\;\Conid{\Conid{Data}.List}{}\<[E]%
+\\
+\>[3]{}\mathbf{import}\;\Conid{\Conid{Data}.Maybe}{}\<[E]%
+\\
+\>[3]{}\mathbf{import}\;\Conid{\Conid{Data}.Char}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\subsubsection{Esqueletos de árbol}
+
+  Definimos lo que será el esqueleto de un árbol, 
+ es decir, un árbol sin etiquetas en los nodos, un arbol binario puro,
+ considerando solo su estructura.
+
+   Un esqueleto se define como un esqueleto vacío o como un punto (nodo)
+ del que salen dos esqueletos de árbol.
+ 
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathbf{data}\;\Conid{EsqArbol}\mathrel{=}\Conid{EsqVacio}{}\<[E]%
+\\
+\>[3]{}\hsindent{13}{}\<[16]%
+\>[16]{}\mid \Conid{Punto}\;(\Conid{EsqArbol})\;(\Conid{EsqArbol}){}\<[E]%
+\\
+\>[16]{}\hsindent{2}{}\<[18]%
+\>[18]{}\mathbf{deriving}\;(\Conid{Show},\Conid{Eq}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+   Definimos una función recursiva trivial para contar nodos de un esqueleto.
+ Creamos una función que crea todos los posibles esqueletos de n nodos. Para ello,
+ en el caso inductivo, crea, para todo i en el rango [0,...,n-1] todos los posibles 
+ árboles con i nodos a la izquierda y todos los posibles con n-1-i nodos a la derecha.
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{nodos}\mathbin{::}\Conid{EsqArbol}\to \Conid{Int}{}\<[E]%
+\\
+\>[3]{}\Varid{nodos}\;\Conid{EsqVacio}\mathrel{=}\mathrm{0}{}\<[E]%
+\\
+\>[3]{}\Varid{nodos}\;(\Conid{Punto}\;\Varid{a}\;\Varid{b})\mathrel{=}\mathrm{1}\mathbin{+}(\Varid{nodos}\;\Varid{a})\mathbin{+}(\Varid{nodos}\;\Varid{b}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{arbolesNodos}\mathbin{::}\Conid{Int}\to [\mskip1.5mu \Conid{EsqArbol}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{arbolesNodos}\;\mathrm{0}\mathrel{=}[\mskip1.5mu \Conid{EsqVacio}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{arbolesNodos}\;\mathrm{1}\mathrel{=}[\mskip1.5mu (\Conid{Punto}\;\Conid{EsqVacio}\;\Conid{EsqVacio})\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{arbolesNodos}\;\Varid{n}\mathrel{=}\Varid{concat}\;[\mskip1.5mu [\mskip1.5mu \Conid{Punto}\;\Varid{x}\;\Varid{y}\mid \Varid{y}\leftarrow \Varid{arbolesNodos}\;(\Varid{n}\mathbin{-}\mathrm{1}\mathbin{-}\Varid{i}),\Varid{x}\leftarrow \Varid{arbolesNodos}\;(\Varid{i})\mskip1.5mu]\mid \Varid{i}\leftarrow [\mskip1.5mu \mathrm{0}\mathinner{\ldotp\ldotp}\Varid{n}\mathbin{-}\mathrm{1}\mskip1.5mu]\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+ Como curiosidad, podemos notar que hay $C_n$ arboles de n nodos, donde $C_n$ es el 
+ enésimo numero de Catalan. La longitud de la lista creada por \texttt{arbolesNodos n} es $C_n$.
+
+ 
+ Ahora vamos a codificar un esqueleto binario. Para ello, asignamos a cada árbol
+ su posicion en la lista de arboles generados, y escribimos el número como palabra binaria.
+
+ Para pasar a binario, intentamos aprovechar al maximo el espacio, para ello usamos todas
+ las palabras binarias posibles. Es decir, transformamos:
+    $$0 -> \_$$
+    $$1 -> 0$$
+    $$2 -> 1$$
+    $$3 -> 00$$
+    $$4 -> 01$$
+  Adjuntamos además otra funcion para pasarlo a una cadena legible de texto.
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{4}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{aBinario}\mathbin{::}\Conid{Int}\to [\mskip1.5mu \Conid{Int}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{aBinario}\;\mathrm{0}\mathrel{=}[\mskip1.5mu \mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{aBinario}\;\Varid{n}\mathrel{=}\Varid{r}\mathbin{:}\Varid{aBinario}\;\Varid{q}{}\<[E]%
+\\
+\>[3]{}\hsindent{1}{}\<[4]%
+\>[4]{}\mathbf{where}\;(\Varid{q},\Varid{r})\mathrel{=}\Varid{divMod}\;(\Varid{n}\mathbin{-}\mathrm{1})\;\mathrm{2}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{binarioLegible}\mathbin{::}\Conid{Int}\to \Conid{String}{}\<[E]%
+\\
+\>[3]{}\Varid{binarioLegible}\;\Varid{x}\mathrel{=}\Varid{map}\;\Varid{intToDigit}\mathbin{\$}\Varid{reverse}\mathbin{\$}\Varid{aBinario}\;\Varid{x}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{codifica}\mathbin{::}\Conid{EsqArbol}\to \Conid{Int}{}\<[E]%
+\\
+\>[3]{}\Varid{codifica}\;\Varid{x}\mathrel{=}\Varid{fromJust}\mathbin{\$}\Varid{elemIndex}\;\Varid{x}\;(\Varid{arbolesNodos}\;\Varid{len}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathbf{where}\;\Varid{len}\mathrel{=}\Varid{nodos}\;\Varid{x}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{codificaLegible}\mathbin{::}\Conid{EsqArbol}\to \Conid{String}{}\<[E]%
+\\
+\>[3]{}\Varid{codificaLegible}\;\Varid{x}\mathrel{=}\Varid{binarioLegible}\mathbin{\$}\Varid{codifica}\;\Varid{x}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+   Por último, implementamos la decodificación. 
+ Nótese que aquí debe conocerse el numero de nodos.
+ 
+ \begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{aNatural}\mathbin{::}[\mskip1.5mu \Conid{Int}\mskip1.5mu]\to \Conid{Int}{}\<[E]%
+\\
+\>[B]{}\Varid{aNatural}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}\mathrm{0}{}\<[E]%
+\\
+\>[B]{}\Varid{aNatural}\;(\Varid{x}\mathbin{:}\Varid{xs})\mathrel{=}\mathrm{2}\mathbin{*}(\Varid{aNatural}\;\Varid{xs})\mathbin{+}\Varid{x}\mathbin{+}\mathrm{1}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{decodifica}\mathbin{::}\Conid{Int}\to \Conid{Int}\to \Conid{EsqArbol}{}\<[E]%
+\\
+\>[B]{}\Varid{decodifica}\;\Varid{x}\;\Varid{nodos}\mathrel{=}(\Varid{arbolesNodos}\;\Varid{nodos})\mathbin{!!}\Varid{x}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{decodificaBinario}\mathbin{::}[\mskip1.5mu \Conid{Int}\mskip1.5mu]\to \Conid{Int}\to \Conid{EsqArbol}{}\<[E]%
+\\
+\>[B]{}\Varid{decodificaBinario}\;\Varid{xs}\;\Varid{nodos}\mathrel{=}\Varid{decodifica}\;(\Varid{aNatural}\;\Varid{xs})\;\Varid{nodos}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{decodificaLegible}\mathbin{::}\Conid{String}\to \Conid{Int}\to \Conid{EsqArbol}{}\<[E]%
+\\
+\>[B]{}\Varid{decodificaLegible}\;\Varid{s}\;\Varid{nodos}\mathrel{=}\Varid{decodificaBinario}\;(\Varid{reverse}\;(\Varid{map}\;\Varid{digitToInt}\mathbin{\$}\Varid{s}))\;\Varid{nodos}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+  
 
 
-% \newpage
-% \section{Inorden no recursivo.}
-% 
-% Diseñamos un procedimiento de inorden no recursivo similar al preorden. En este caso, distinguimos entre si se puede seguir avanzando a la derecha,
-% en cuyo caso lo hacemos, o si llegamos a un nodo sin hijos a la izquierda, que entonces se imprime y pasa a su parte derecha.\\
-% 
-% Terminamos en cuanto no podamos seguir avanzndo ni queden nodos por visitar en la pila.\\
-% 
-% 
-% \input{inord.tex}
-% 
+\subsubsection{Árboles de verdad}
+
+
+  Para ver la aplicacion real del algoritmo, vamos a escribir arboles
+ de verdad y a codificarlos. Definimos un arbol de manera parecida al esqueleto.
+ Como diferencia, ahora permitimos que la etiqueta contenga un dato de tipo a.
+
+ \begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{Arbol}\;\Varid{a}\mathrel{=}\Conid{ArbolVacio}{}\<[E]%
+\\
+\>[B]{}\hsindent{13}{}\<[13]%
+\>[13]{}\mid \Conid{Nodo}\;\Varid{a}\;(\Conid{Arbol}\;\Varid{a})\;(\Conid{Arbol}\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\hsindent{13}{}\<[13]%
+\>[13]{}\mathbf{deriving}\;(\Conid{Show},\Conid{Eq}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+  Ahora codifica un árbol binario.
+  Para ello, toma sus elementos y los guarda, por otro lado, lo transforma en esqueleto. 
+  La codificacion son sus elementos, implicita su longitud, y la codificacion binaria del esqueleto.
+
+  \begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{transformaEsqueleto}\mathbin{::}\Conid{Arbol}\;\Varid{a}\to \Conid{EsqArbol}{}\<[E]%
+\\
+\>[B]{}\Varid{transformaEsqueleto}\;\Conid{ArbolVacio}\mathrel{=}\Conid{EsqVacio}{}\<[E]%
+\\
+\>[B]{}\Varid{transformaEsqueleto}\;(\Conid{Nodo}\;\anonymous \;\Varid{a}\;\Varid{b})\mathrel{=}(\Conid{Punto}\;(\Varid{transformaEsqueleto}\;\Varid{a})\;(\Varid{transformaEsqueleto}\;\Varid{b})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{preorden}\mathbin{::}\Conid{Arbol}\;\Varid{a}\to [\mskip1.5mu \Varid{a}\mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{preorden}\;\Conid{ArbolVacio}\mathrel{=}[\mskip1.5mu \mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{preorden}\;(\Conid{Nodo}\;\Varid{x}\;\Varid{a}\;\Varid{b})\mathrel{=}\Varid{x}\mathbin{:}((\Varid{preorden}\;\Varid{a})\plus (\Varid{preorden}\;\Varid{b})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{codificaArbol}\mathbin{::}\Conid{Arbol}\;\Varid{a}\to ([\mskip1.5mu \Varid{a}\mskip1.5mu],\Conid{String}){}\<[E]%
+\\
+\>[B]{}\Varid{codificaArbol}\;\Varid{x}\mathrel{=}(\Varid{preorden}\;\Varid{x},\Varid{codificaLegible}\mathbin{\circ}\Varid{transformaEsqueleto}\mathbin{\$}\Varid{x}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+ Y ahora decodifica un arbol binario.
+ Para ello, decodifica el esqueleto del arbol 
+ y rellena el esqueleto con los elementos del preorden.
+
+ \begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{rellenaEsqueleto}\mathbin{::}\Conid{EsqArbol}\to [\mskip1.5mu \Varid{a}\mskip1.5mu]\to \Conid{Arbol}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{rellenaEsqueleto}\;\Conid{EsqVacio}\;\anonymous \mathrel{=}\Conid{ArbolVacio}{}\<[E]%
+\\
+\>[B]{}\Varid{rellenaEsqueleto}\;\anonymous \;[\mskip1.5mu \mskip1.5mu]\mathrel{=}\Conid{ArbolVacio}{}\<[E]%
+\\
+\>[B]{}\Varid{rellenaEsqueleto}\;(\Conid{Punto}\;\Varid{u}\;\Varid{v})\;(\Varid{x}\mathbin{:}\Varid{xs})\mathrel{=}(\Conid{Nodo}\;\Varid{x}\;\Varid{subIzquierdo}\;\Varid{subDerecho}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{where}\;(\Varid{parteIzquierda},\Varid{parteDerecha})\mathrel{=}\Varid{splitAt}\;(\Varid{nodos}\;\Varid{u})\;\Varid{xs}{}\<[E]%
+\\
+\>[3]{}\hsindent{6}{}\<[9]%
+\>[9]{}\Varid{subIzquierdo}\mathrel{=}\Varid{rellenaEsqueleto}\;\Varid{u}\;\Varid{parteIzquierda}{}\<[E]%
+\\
+\>[3]{}\hsindent{6}{}\<[9]%
+\>[9]{}\Varid{subDerecho}{}\<[22]%
+\>[22]{}\mathrel{=}\Varid{rellenaEsqueleto}\;\Varid{v}\;\Varid{parteDerecha}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{decodificaArbol}\mathbin{::}([\mskip1.5mu \Varid{a}\mskip1.5mu],\Conid{String})\to \Conid{Arbol}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{decodificaArbol}\;(\Varid{datos},\Varid{codificado})\mathrel{=}\Varid{rellenaEsqueleto}\;(\Varid{decodificaLegible}\;\Varid{codificado}\;\Varid{nodos})\;\Varid{datos}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{where}\;\Varid{nodos}\mathrel{=}\Varid{length}\;\Varid{datos}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsubsection{Funciones auxiliares}
+
+
+  Para poder aprovechar la codificacion creada, se presentan funciones auxiliares que
+ faciliten ejemplos de uso.
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{insercionEnArbol}\mathbin{::}(\Conid{Ord}\;\Varid{a})\Rightarrow \Varid{a}\to \Conid{Arbol}\;\Varid{a}\to \Conid{Arbol}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{insercionEnArbol}\;\Varid{x}\;\Conid{ArbolVacio}\mathrel{=}(\Conid{Nodo}\;\Varid{x}\;\Conid{ArbolVacio}\;\Conid{ArbolVacio}){}\<[E]%
+\\
+\>[B]{}\Varid{insercionEnArbol}\;\Varid{x}\;(\Conid{Nodo}\;\Varid{a}\;\Varid{izq}\;\Varid{der}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Varid{x}\leq \Varid{a}{}\<[13]%
+\>[13]{}\mathrel{=}\Conid{Nodo}\;\Varid{a}\;(\Varid{insercionEnArbol}\;\Varid{x}\;\Varid{izq})\;\Varid{der}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Varid{x}\mathbin{>}\Varid{a}{}\<[12]%
+\>[12]{}\mathrel{=}\Conid{Nodo}\;\Varid{a}\;\Varid{izq}\;(\Varid{insercionEnArbol}\;\Varid{x}\;\Varid{der}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{crearArbol}\mathbin{::}(\Conid{Ord}\;\Varid{a})\Rightarrow [\mskip1.5mu \Varid{a}\mskip1.5mu]\to \Conid{Arbol}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{crearArbol}\mathrel{=}\Varid{foldr}\;\Varid{insercionEnArbol}\;\Conid{ArbolVacio}\mathbin{\circ}\Varid{reverse}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+Definimos el orden total entre esqueletos de árbol.
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{esqCompara}\mathbin{::}\Conid{EsqArbol}\to \Conid{EsqArbol}\to \Conid{Ordering}{}\<[E]%
+\\
+\>[B]{}\Varid{esqCompara}\;\Conid{EsqVacio}\;\Conid{EsqVacio}\mathrel{=}\Conid{EQ}{}\<[E]%
+\\
+\>[B]{}\Varid{esqCompara}\;\Conid{EsqVacio}\;\anonymous \mathrel{=}\Conid{LT}{}\<[E]%
+\\
+\>[B]{}\Varid{esqCompara}\;\anonymous \;\Conid{EsqVacio}\mathrel{=}\Conid{GT}{}\<[E]%
+\\
+\>[B]{}\Varid{esqCompara}\;\Varid{a}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid (\Varid{nodos}\;\Varid{a})\mathbin{<}(\Varid{nodos}\;\Varid{b})\mathrel{=}\Conid{LT}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid (\Varid{nodos}\;\Varid{a})\mathbin{>}(\Varid{nodos}\;\Varid{b})\mathrel{=}\Conid{GT}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid (\Varid{esqCompara}\;\Varid{ad}\;\Varid{bd})\equiv \Conid{LT}\mathrel{=}\Conid{LT}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid (\Varid{esqCompara}\;\Varid{ad}\;\Varid{bd})\equiv \Conid{GT}\mathrel{=}\Conid{GT}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Varid{otherwise}\mathrel{=}(\Varid{esqCompara}\;\Varid{ai}\;\Varid{bi}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathbf{where}\;(\Conid{Punto}\;\Varid{ai}\;\Varid{ad})\mathrel{=}\Varid{a}{}\<[E]%
+\\
+\>[5]{}\hsindent{6}{}\<[11]%
+\>[11]{}(\Conid{Punto}\;\Varid{bi}\;\Varid{bd})\mathrel{=}\Varid{b}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\subsubsection{Ejemplo de uso}
+
+  Para comprobar el correcto funcionamiento de la codificacion expuesta, probamos a codificar un arbol sencillo.
+El resultado de la ejecucion de una sesion interactiva de ghci, compilando este codigo, se muestra a continuacion.
+
+-- Creamos un arbol binario desde la lista [2,5,3,4,6,5]
+
+*> let p = crearArbol [2,5,3,4,6,5]
+*> p
+Nodo 2 ArbolVacio (Nodo 5 (Nodo 3 ArbolVacio (Nodo 4 ArbolVacio (Nodo 5 ArbolVacio ArbolVacio))) (Nodo 6 ArbolVacio ArbolVacio))
+
+
+-- Codificamos el arbol
+
+*> let cod = codificaArbol p
+*> cod
+([2,5,3,4,5,6],"1000")
+
+
+-- Decodificamos y comprobamos que equivale al original.
+
+*> decodificaArbol cod
+Nodo 2 ArbolVacio (Nodo 5 (Nodo 3 ArbolVacio (Nodo 4 ArbolVacio (Nodo 5 ArbolVacio ArbolVacio))) (Nodo 6 ArbolVacio ArbolVacio))
+
 
 \end{document}
